@@ -1,0 +1,51 @@
+## Interface: 110007
+## SavedVariables: MyAddon_SavedVariables
+
+
+collections.lua
+
+
+audio/collection.lua
+	audio/ui.lua
+
+character/collection.lua
+	character/api.lua
+	character/persistentData.lua
+	character/ui.lua
+
+dressingRoom/collection.lua
+	dressingRoom/ui.lua
+
+map/collection.lua
+	map/api.lua
+
+metrics/collection.lua
+	metrics/api.lua
+	metrics/ui.lua
+
+mount/collection.lua
+	mount/api.lua
+	mount/command.lua
+	mount/ui.lua
+
+persistentData/collection.lua
+	persistentData/api.lua
+	persistentData/command.lua
+	persistentData/ui.lua
+
+quest/collection.lua
+	quest/data.lua
+	quest/database.lua
+	quest/ui.lua
+
+table/collection.lua
+	table/api.lua
+
+tradingPost/collection.lua
+	tradingPost/ui.lua
+
+transmog/collection.lua
+	transmog/ui.lua
+
+value/collection.lua
+	value/api.lua
