@@ -9,27 +9,28 @@ local imports = {
 
 
 addonData.CollectionsAPI:GetCollection('metrics'):AddMixin('ui', imports, function()
-	local MetricsUI = CreateFrame('frame', nil, UIParent)
+	local MetricsUI = CreateFrame('button', nil, UIParent)
 
+	MetricsUI.textUpdateInterval = 0.3
+
+	MetricsUI:Hide()
 	MetricsUI:SetPoint('topLeft', 3, 0)
 	MetricsUI:SetSize(1, 1)
 
-	MetricsUI.PlayerDamageText = CreateFrame('button', nil, MetricsUI)
+	MetricsUI.PlayerDamageText = MetricsUI:CreateFontString()
+	MetricsUI.PlayerDamageText:SetFont('Fonts/blei00d.ttf', 16)
 	MetricsUI.PlayerDamageText:SetPoint('left')
-	MetricsUI.PlayerDamageText:SetText('-')
-	MetricsUI.PlayerDamageText:GetFontString():SetFont('Fonts/blei00d.ttf', 16)
-	MetricsUI.PlayerDamageText:GetFontString():SetTextColor(1, 0.82, 0)
+	MetricsUI.PlayerDamageText:SetTextColor(1, 0.82, 0)
 
-	hooksecurefunc(MetricsUI.PlayerDamageText, 'SetText', function(self)
-		self:SetSize(self:GetFontString():GetSize())
-
+	hooksecurefunc(MetricsUI.PlayerDamageText, 'SetText', function()
 		MetricsUI:ResizeToText()
 	end)
 
-	MetricsUI.PlayerDamageText:SetScript("onClick", function()
+	function MetricsUI.PlayerDamageText:OnClick()
 		imports.metrics.api:ResetUnitDamage(UnitGUID('player'))
-	end)
 
+		MetricsUI:UpdateDamageText()
+	end
 
 	function MetricsUI:UpdateDamageText()
 		local playerGUID = UnitGUID('player')
@@ -43,9 +44,9 @@ addonData.CollectionsAPI:GetCollection('metrics'):AddMixin('ui', imports, functi
 			local formattedUnitDamagePerSecond
 
 			if ( unitDamagePerSecond > 1000000 ) then
-				formattedUnitDamagePerSecond = math.floor(unitDamagePerSecond / 100000) / 10 .. "m"
+				formattedUnitDamagePerSecond = math.floor(unitDamagePerSecond / 100000) / 10 .. 'm'
 			elseif ( unitDamagePerSecond > 1000 ) then
-				formattedUnitDamagePerSecond = math.floor(unitDamagePerSecond / 100) / 10 .. "k"
+				formattedUnitDamagePerSecond = math.floor(unitDamagePerSecond / 100) / 10 .. 'k'
 			else
 				formattedUnitDamagePerSecond = unitDamagePerSecond
 			end
@@ -55,27 +56,86 @@ addonData.CollectionsAPI:GetCollection('metrics'):AddMixin('ui', imports, functi
 		end
 	end
 
+	function MetricsUI:ToggleDisplay()
+		if self:IsShown() then
+			self:Hide()
+		else
+			self:Show()
+		end
+	end
+
+	function MetricsUI:GetFontStrings()
+		return {
+			self.PlayerDamageText,
+		}
+	end
+
 	function MetricsUI:ResizeToText()
-		local height = 0
-		local width = 0
+		local bottom
+		local left
+		local right
+		local top
 
-		local childWidth, childHeight = self.PlayerDamageText:GetSize()
+		for _, fontString in ipairs(self:GetFontStrings()) do
+			local fontStringLeft, fontStringBottom, fontStringWidth, fontStringHeight = fontString:GetRect()
 
-		if childWidth > width then
-			width = childWidth
+			local fontStringRight = fontStringLeft + fontStringWidth
+			local fontStringTop = fontStringBottom + fontStringHeight
+
+			if not bottom or fontStringBottom < bottom then
+				bottom = fontStringBottom
+			end
+
+			if not left or fontStringLeft < left then
+				left = fontStringLeft
+			end
+
+			if not right or fontStringRight > right then
+				right = fontStringRight
+			end
+
+			if not top or fontStringTop > top then
+				top = fontStringTop
+			end
 		end
 
-		if childHeight > height then
-			height = childHeight
-		end
+		local height = top - bottom
+		local width = right - left
 
 		self:SetSize(width, height)
 	end
 
+	MetricsUI.onUpdateElapsed = 0
+	function MetricsUI:OnUpdate(elapsed)
+		self.onUpdateElapsed = self.onUpdateElapsed + elapsed
 
-	C_Timer.NewTicker(0.25, function()
-		MetricsUI:UpdateDamageText()
+		if self.onUpdateElapsed < self.textUpdateInterval then
+			return
+		end
+
+		self:UpdateDamageText()
+
+		self.onUpdateElapsed = 0
+	end
+
+
+
+	MetricsUI:RegisterForClicks('AnyUp')
+	MetricsUI:SetScript('onClick', function(self, button)
+		if button == 'LeftButton' then
+			for _, fontString in ipairs(self:GetFontStrings()) do
+				if fontString:IsMouseOver() then
+					if type(fontString.OnClick) == 'function' then
+						fontString:OnClick(button)
+					end
+				end
+			end
+		elseif button == 'RightButton' then
+			self:ToggleDisplay()
+		end
 	end)
+
+	MetricsUI:SetScript('onUpdate', MetricsUI.OnUpdate)
 
 
 	return MetricsUI
