@@ -2,30 +2,33 @@ local addonName, addonData = ...
 
 
 local accessKeys = {}
-local addonPersistentData
+local globalPersistentData
+
 
 
 local function getSavedVariablesKey()
-	return addonName .. "_SavedVariables"
+	return addonName .. '_SavedVariables'
 end
 
-
 local function getPersistentData()
-	if addonPersistentData == nil then
+	if globalPersistentData == nil then
 		local isAddonLoaded = select(2, C_AddOns.IsAddOnLoaded(addonName))
 
 		if isAddonLoaded then
-			addonPersistentData = _G[getSavedVariablesKey()]
+			globalPersistentData = _G[getSavedVariablesKey()]
 
-			if type(addonPersistentData) ~= "table" then
-				addonPersistentData = {}
+			if type(globalPersistentData) ~= 'table' then
+				globalPersistentData = {}
 			end
 		else
-			error("Addon not yet loaded, persistent data not ready")
+			error(string.format(
+				'Addon %s not yet loaded, persistent data not ready',
+				addonName
+			))
 		end
 	end
 
-	return addonPersistentData
+	return globalPersistentData
 end
 
 local function getNewAccessKey()

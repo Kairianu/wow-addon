@@ -1,4 +1,4 @@
 local addonName, addonData = ...
 
 
-addonData.CollectionsAPI:CreateCollection("persistentData")
+addonData.CollectionsAPI:CreateCollection('persistentData')
