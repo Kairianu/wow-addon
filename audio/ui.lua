@@ -159,9 +159,9 @@ end)
 local VolumeFrame = CreateFrame("frame")
 
 VolumeFrame.masterVolumeCVarName = "Sound_MasterVolume"
-VolumeFrame.volumeDownKey = "F7"
+VolumeFrame.volumeDownKey = "F5"
 VolumeFrame.volumeOffset = 0.05
-VolumeFrame.volumeUpKey = "F8"
+VolumeFrame.volumeUpKey = "F6"
 
 function VolumeFrame:OffsetMasterVolume(volumeDown)
 	local masterVolumeValue = tonumber(C_CVar.GetCVar(self.masterVolumeCVarName))
