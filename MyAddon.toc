@@ -5,6 +5,9 @@
 collections.lua
 
 
+actionButton/collection.lua
+	actionButton/ui.lua
+
 audio/collection.lua
 	audio/ui.lua
 
@@ -15,6 +18,9 @@ character/collection.lua
 
 command/collection.lua
 	command/api.lua
+
+cvar/collection.lua
+	cvar/api.lua
 
 dressingRoom/collection.lua
 	dressingRoom/ui.lua
