@@ -45,7 +45,7 @@ addonData.CollectionsAPI:GetCollection('command'):AddMixin('api', function()
 			local slashName
 
 			if slashNames == nil then
-				slashName = commandName
+				slashName = commandName:gsub('_', '-')
 			else
 				slashName = slashNames
 			end
