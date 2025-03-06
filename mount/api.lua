@@ -204,12 +204,7 @@ addonData.CollectionsAPI:GetCollection("mount"):AddMixin("api", IMPORTS, functio
 		end
 
 		local mountIDOrName
-		local mountMacroBody
 
-		local unitClass = UnitClass('player')
-
-		-- if unitClass == 'Druid' then
-		-- 	mountMacroBody = '#showtooltip\n/cast [outdoors] Travel Form(Shapeshift); Cat Form(Shapeshift)'
 		if UnitInOtherParty('player') then
 			mountIDOrName = self:GetBestPassengerMountID()
 		elseif self:CanPlayerFly() then
@@ -222,17 +217,15 @@ addonData.CollectionsAPI:GetCollection("mount"):AddMixin("api", IMPORTS, functio
 			mountIDOrName = self:GetRandomSwimmingMountID()
 		end
 
-		if not mountMacroBody then
-			if not mountIDOrName then
-				mountIDOrName = self:GetMountID(Enum.MountType.Ground) or self:GetRandomGroundMountID()
-			end
-
-			if not mountIDOrName then
-				mountIDOrName = self:GetRandomFlyingMountID() or self:GetRandomGroundMountID()
-			end
+		if not mountIDOrName then
+			mountIDOrName = self:GetMountID(Enum.MountType.Ground) or self:GetRandomGroundMountID()
 		end
 
-		return mountIDOrName, mountMacroBody
+		if not mountIDOrName then
+			mountIDOrName = self:GetRandomFlyingMountID() or self:GetRandomGroundMountID()
+		end
+
+		return mountIDOrName
 	end
 
 	function MountAPI:GetBestPassengerMountID()
@@ -314,27 +307,25 @@ addonData.CollectionsAPI:GetCollection("mount"):AddMixin("api", IMPORTS, functio
 			return
 		end
 
-		local mountIDOrName, mountMacroBody = self:GetBestMountInfo()
+		local mountIDOrName = self:GetBestMountInfo()
 
-		if not mountMacroBody then
-			local mountName
+		local mountName
 
-			if type(mountIDOrName) == 'number' then
-				mountName = C_MountJournal.GetMountInfoByID(mountIDOrName)
-			else
-				mountName = mountIDOrName
-			end
-
-			if mountName then
-				mountMacroBody = string.format(
-					'#showtooltip %s\n/dismount [mounted]\n/cast [nomounted] %s',
-					mountName,
-					mountName
-				)
-			end
+		if type(mountIDOrName) == 'number' then
+			mountName = C_MountJournal.GetMountInfoByID(mountIDOrName)
+		else
+			mountName = mountIDOrName
 		end
 
-		if not mountMacroBody then
+		local mountMacroBody
+
+		if mountName then
+			mountMacroBody = string.format(
+				'#showtooltip %s\n/dismount [mounted]\n/cast [nomounted] %s',
+				mountName,
+				mountName
+			)
+		else
 			return
 		end
 
