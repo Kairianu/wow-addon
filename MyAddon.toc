@@ -27,6 +27,7 @@ dressingRoom/collection.lua
 
 map/collection.lua
 	map/api.lua
+	map/command.lua
 
 metrics/collection.lua
 	metrics/api.lua

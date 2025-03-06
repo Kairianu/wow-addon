@@ -64,61 +64,7 @@ function Map:GetContinentZoneIDs(continentName)
 end
 
 
-SLASH_POSITION_INFO1 = "/positioninfo"
-SLASH_POSITION_INFO2 = "/pi"
-SlashCmdList["POSITION_INFO"] = function()
-	local mapPointType
-	local mapPosition
-	local uiMapID
-	local waypointInfo = C_Map.GetUserWaypoint()
 
-	if waypointInfo then
-		mapPointType = "Waypoint"
-		mapPosition = waypointInfo.position
-		uiMapID = waypointInfo.uiMapID
-	else
-		mapPointType = "Player"
-		uiMapID = C_Map.GetBestMapForUnit("player")
-
-		if uiMapID then
-			mapPosition = C_Map.GetPlayerMapPosition(uiMapID, "player")
-		end
-	end
-
-	local message
-
-	if mapPosition then
-		message = addonTable.Color:WrapTextInColor("yellow", string.format("%s Position Info", mapPointType))
-
-		if mapPosition then
-			local continentID, worldPosition = C_Map.GetWorldPosFromMapPos(uiMapID, mapPosition)
-
-			message = message .. addonTable.Color:WrapTextInColor("blue", "\nContinent:")
-			message = message .. addonTable.Color:WrapTextInColor("bluelight", "\n    id  ") .. continentID
-			message = message .. addonTable.Color:WrapTextInColor("bluelight", "\n    x   ") .. worldPosition.x
-			message = message .. addonTable.Color:WrapTextInColor("bluelight", "\n    y   ") .. worldPosition.y
-		end
-
-		message = message .. addonTable.Color:WrapTextInColor("blue", "\nMap:")
-
-		local mapInfo = C_Map.GetMapInfo(uiMapID)
-
-		if mapInfo then
-			message = message .. string.format(" %s", mapInfo.name)
-		end
-
-		message = message .. addonTable.Color:WrapTextInColor("bluelight", "\n    id  ") .. uiMapID
-
-		if mapPosition then
-			message = message .. addonTable.Color:WrapTextInColor("bluelight", "\n    x   ") .. mapPosition.x
-			message = message .. addonTable.Color:WrapTextInColor("bluelight", "\n    y   ") .. mapPosition.y
-		end
-	else
-		message = addonTable.Color:WrapTextInColor("red", "Unable to get map info")
-	end
-
-	DEFAULT_CHAT_FRAME:AddMessage(message)
-end
 
 
 
