@@ -205,7 +205,11 @@ addonData.CollectionsAPI:GetCollection("mount"):AddMixin("api", IMPORTS, functio
 
 		local mountIDOrName
 
-		if UnitInOtherParty('player') then
+		local uiMapID = C_Map.GetBestMapForUnit('player')
+
+		if uiMapID == 2346 then
+			mountIDOrName = 'G-99 Breakneck'
+		elseif UnitInOtherParty('player') then
 			mountIDOrName = self:GetBestPassengerMountID()
 		elseif self:CanPlayerFly() then
 			-- if addonTable.Container:IsItemOnPlayer(37011) then -- addonTable.Calendar:IsEventActive("Hallow's End")
