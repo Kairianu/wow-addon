@@ -14,7 +14,7 @@ local imports = {
 }
 
 addonData.CollectionsAPI:GetCollection('metrics'):AddMixin('command', imports, function()
-	imports.command.api:AddCommand('metrics', function()
+	imports.command.api:AddCommand('METRICS', function()
 		imports.metrics.ui:ToggleDisplay()
 	end)
 end)
