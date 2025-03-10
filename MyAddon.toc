@@ -39,6 +39,10 @@ mount/collection.lua
 	mount/command.lua
 	mount/ui.lua
 
+movementSpeed/collection.lua
+	movementSpeed/api.lua
+	movementSpeed/ui.lua
+
 persistentData/collection.lua
 	persistentData/api.lua
 	persistentData/command.lua
