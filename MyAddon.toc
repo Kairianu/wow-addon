@@ -6,6 +6,7 @@ collections.lua
 
 
 actionButton/collection.lua
+	actionButton/command.lua
 	actionButton/ui.lua
 
 audio/collection.lua
