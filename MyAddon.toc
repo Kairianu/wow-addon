@@ -11,6 +11,9 @@ actionButton/collection.lua
 audio/collection.lua
 	audio/ui.lua
 
+bank/collection.lua
+	bank/ui.lua
+
 character/collection.lua
 	character/api.lua
 	character/persistentData.lua
