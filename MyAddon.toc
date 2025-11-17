@@ -1,4 +1,4 @@
-## Interface: 110100
+## Interface: 110205
 ## SavedVariables: MyAddon_SavedVariables
 
 
