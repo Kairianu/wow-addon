@@ -50,7 +50,7 @@ end)
 
 local QuestLogIDText = QuestMapFrame.DetailsFrame.BackFrame:CreateFontString()
 QuestLogIDText:SetFont(QuestFrameIDText:GetFont())
-QuestLogIDText:SetPoint('left', QuestMapFrame.DetailsFrame.BackFrame.BackButton, 'right', 50, 0)
+QuestLogIDText:SetPoint('left', QuestMapFrame.DetailsFrame.BackFrame.BackButton, 'right', 14, 0)
 QuestLogIDText:SetText('Quest ID:')
 
 local QuestLogIDEditBox = CreateFrame('editBox', nil, QuestLogIDText:GetParent())
