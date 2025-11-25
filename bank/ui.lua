@@ -119,11 +119,11 @@ end
 
 
 
-AccountBankPanel.MoneyFrame.DepositButton:HookScript('onClick', function()
+BankPanel.MoneyFrame.DepositButton:HookScript('onClick', function()
 	MoneyButtonsMixin:Show()
 end)
 
-AccountBankPanel.MoneyFrame.WithdrawButton:HookScript('onClick', function()
+BankPanel.MoneyFrame.WithdrawButton:HookScript('onClick', function()
 	MoneyButtonsMixin:Show('withdraw')
 end)
 
