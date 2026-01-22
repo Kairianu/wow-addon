@@ -65,3 +65,11 @@ transmog/collection.lua
 
 value/collection.lua
 	value/api.lua
+
+
+
+
+
+## Remove below before release
+
+personalSettings.lua
