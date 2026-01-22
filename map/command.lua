@@ -97,4 +97,50 @@ addonData.CollectionsAPI:GetCollection('map'):AddMixin('command', imports, funct
 			DEFAULT_CHAT_FRAME:AddMessage(message)
 		end
 	)
+
+
+	-- TODO: This is old code
+	SLASH_SETWAYPOINT1 = "/way"
+	SlashCmdList["SETWAYPOINT"] = function(argString)
+		if argString == "" then
+			C_Map.ClearUserWaypoint()
+			return
+		end
+
+		local argTable = {}
+
+		for arg in string.gmatch(argString, "[^%s]+") do
+			table.insert(argTable, arg)
+		end
+
+		local x
+		local y
+		local uiMapID
+
+		local arg1 = argTable[1]
+
+		if string.sub(arg1, 1, string.len('#')) == '#' then
+			uiMapID = string.sub(arg1, 2)
+			x = argTable[2]
+			y = argTable[3]
+		else
+			uiMapID = C_Map.GetBestMapForUnit("player")
+			x = arg1
+			y = argTable[2]
+		end
+
+		x = x:gsub("[^0-9.]", "")
+		x = tonumber(x)
+
+		y = y:gsub("[^0-9.]", "")
+		y = tonumber(y)
+
+		if not C_Map.CanSetUserWaypointOnMap(uiMapID) then
+			DEFAULT_CHAT_FRAME:AddMessage("|cffff0000Cannot set waypoint|r")
+			return
+		end
+
+		C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(uiMapID, x / 100, y / 100))
+		C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+	end
 end)
