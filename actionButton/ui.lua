@@ -93,6 +93,8 @@ end
 
 local ActionButtonTest = CreateFrame('button', 'MyAddon_ActionButtonTest', UIParent, 'SecureActionButtonTemplate')
 
+ActionButtonTest:Hide()
+
 setmetatable(ActionButtonTest, {
 	__index = actionButtonMetatableIndex,
 
