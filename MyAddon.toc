@@ -37,8 +37,6 @@ metrics/collection.lua
 
 mount/collection.lua
 	mount/api.lua
-	mount/command.lua
-	mount/ui.lua
 
 movementSpeed/collection.lua
 	movementSpeed/api.lua

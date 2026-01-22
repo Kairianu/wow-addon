@@ -303,9 +303,10 @@ addonData.CollectionsAPI:GetCollection("mount"):AddMixin("api", IMPORTS, functio
 
 		characterSpecializationVariables.mounts[mountTypeID] = mountID
 
-		self:UpdateMountMacro()
+		-- self:UpdateMountMacro()
 	end
 
+	-- TODO: Remove or possibly replace this function
 	function MountAPI:UpdateMountMacro()
 		if UnitAffectingCombat("player") then
 			return
@@ -344,6 +345,7 @@ addonData.CollectionsAPI:GetCollection("mount"):AddMixin("api", IMPORTS, functio
 		end
 	end
 
+	-- TODO: Remove or possibly replace this function
 	function MountAPI:UpdateSwimmingMountMacro()
 		if not IsSwimming() then
 			return
