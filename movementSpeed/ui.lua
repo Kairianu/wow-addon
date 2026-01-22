@@ -15,28 +15,21 @@ end)
 
 local MovementSpeedFrame = CreateFrame('frame', nil, UIParent)
 
-function MovementSpeedFrame:GetDefaultAnchorPoints()
-	return {
-		{'right', -5, 0},
-		{'bottom', MicroButtonAndBagsBar, 'top', 0, 5},
-	}
-end
+function MovementSpeedFrame:UpdatePosition(isGliding)
+	if isGliding == nil then
+		isGliding = C_PlayerInfo.GetGlidingInfo()
+	end
 
-function MovementSpeedFrame:GetDragonridingAnchorPoints()
-	return {
-		{'top', EncounterBar, 'bottom', 0, 20},
-	}
-end
-
-function MovementSpeedFrame:SetAnchorPoints(anchorPoints)
 	self:ClearAllPoints()
 
-	for _, anchorPoint in ipairs(anchorPoints) do
-		self:SetPoint(unpack(anchorPoint))
+	if isGliding then
+		self:SetPoint('Top', EncounterBar, 'Bottom', 0, 20)
+	else
+		self:SetPoint('Right', BagsBar, 'Left', -5, 1.5)
 	end
 end
 
-MovementSpeedFrame:SetAnchorPoints(MovementSpeedFrame:GetDefaultAnchorPoints())
+MovementSpeedFrame:UpdatePosition()
 MovementSpeedFrame:SetSize(1, 1)
 
 MovementSpeedFrame.SpeedFontString = MovementSpeedFrame:CreateFontString()
@@ -48,19 +41,9 @@ hooksecurefunc(MovementSpeedFrame.SpeedFontString, 'SetText', function(self)
 	self:GetParent():SetSize(self:GetSize())
 end)
 
-MovementSpeedFrame:RegisterEvent('PLAYER_CAN_GLIDE_CHANGED')
+MovementSpeedFrame:RegisterEvent('PLAYER_IS_GLIDING_CHANGED')
 MovementSpeedFrame:SetScript('onEvent', function(self, event, arg1)
-	if event == 'PLAYER_CAN_GLIDE_CHANGED' then
-		local anchorPoints
-
-		if arg1 then
-			anchorPoints = self:GetDragonridingAnchorPoints()
-		else
-			anchorPoints = self:GetDefaultAnchorPoints()
-		end
-
-		self:SetAnchorPoints(anchorPoints)
-	end
+	self:UpdatePosition(arg1)
 end)
 
 MovementSpeedFrame.onUpdateElapsed = 0
@@ -74,21 +57,13 @@ MovementSpeedFrame:SetScript('onUpdate', function(self, elapsed)
 
 	self.onUpdateElapsed = 0
 
-	local isGliding, canGlide, glidingSpeed = C_PlayerInfo.GetGlidingInfo()
-
-	local movementSpeed
-
-	if isGliding then
-		movementSpeed = glidingSpeed
-	else
-		movementSpeed = GetUnitSpeed('player')
-	end
+	local movementSpeed = MovementSpeedAPI:GetCurrentMovementSpeed()
 
 	if movementSpeed == 0 then
 		self.SpeedFontString:SetText()
 	else
-		self.SpeedFontString:SetText(
-			MovementSpeedAPI:GetMovementSpeedPercentString(movementSpeed)
-		)
+		local movementSpeedPercentString = MovementSpeedAPI:GetMovementSpeedPercentString(movementSpeed)
+
+		self.SpeedFontString:SetText(movementSpeedPercentString)
 	end
 end)
