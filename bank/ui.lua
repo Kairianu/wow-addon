@@ -44,6 +44,29 @@ local function createMoneyButton()
 	return MoneyButton
 end
 
+local function getMoneyForLimit(transferType, moneyLimit)
+	local accountMoney = C_Bank.FetchDepositedMoney(Enum.BankType.Account)
+	local playerMoney = GetMoney()
+
+	local moneyToTransfer
+
+	if transferType == 'withdraw' then
+		if playerMoney >= moneyLimit then
+			moneyToTransfer = 0
+		else
+			moneyToTransfer = moneyLimit - playerMoney
+		end
+	else
+		if playerMoney <= moneyLimit then
+			moneyToTransfer = 0
+		else
+			moneyToTransfer = playerMoney - moneyLimit
+		end
+	end
+
+	return moneyToTransfer
+end
+
 
 
 local SelectAllMoneyButton = createMoneyButton()
@@ -66,40 +89,35 @@ end)
 
 local Select5KMoneyButton = createMoneyButton()
 
-Select5KMoneyButton:SetPoint('left', StaticPopup1MoneyInputFrameCopper, 'right', 0, 0)
+Select5KMoneyButton:SetPoint('left', StaticPopup1MoneyInputFrameCopper, 'right', 5, 0)
 Select5KMoneyButton:SetText('5k')
 
 Select5KMoneyButton:SetScript('onClick', function(self)
-	local moneyLimit = 50000000
+	local moneyToTransfer = getMoneyForLimit(self.transferType, 50000000)
 
-	local accountMoney = C_Bank.FetchDepositedMoney(Enum.BankType.Account)
-	local playerMoney = GetMoney()
+	self:SetMoneyEditBox(
+		self:GetSeparatedMoney(moneyToTransfer)
+	)
+end)
 
-	local accountGold, accountSilver, accountCopper = self:GetSeparatedMoney(accountMoney)
-	local playerGold, playerSilver, playerCopper = self:GetSeparatedMoney(playerMoney)
 
-	local moneyToTransfer
+local Select1KMoneyButton = createMoneyButton()
 
-	if self.transferType == 'withdraw' then
-		if playerMoney >= moneyLimit then
-			moneyToTransfer = 0
-		else
-			moneyToTransfer = moneyLimit - playerMoney
-		end
-	else
-		if playerMoney <= moneyLimit then
-			moneyToTransfer = 0
-		else
-			moneyToTransfer = playerMoney - moneyLimit
-		end
-	end
+Select1KMoneyButton:SetPoint('bottom', Select5KMoneyButton, 'top', 0, 0)
+Select1KMoneyButton:SetText('1k')
 
-	self:SetMoneyEditBox(self:GetSeparatedMoney(moneyToTransfer))
+Select1KMoneyButton:SetScript('onClick', function(self)
+	local moneyToTransfer = getMoneyForLimit(self.transferType, 10000000)
+
+	self:SetMoneyEditBox(
+		self:GetSeparatedMoney(moneyToTransfer)
+	)
 end)
 
 
 local MoneyButtonsMixin = {
 	moneyButtons = {
+		Select1KMoneyButton,
 		Select5KMoneyButton,
 		SelectAllMoneyButton,
 	},
@@ -126,8 +144,3 @@ end)
 BankPanel.MoneyFrame.WithdrawButton:HookScript('onClick', function()
 	MoneyButtonsMixin:Show('withdraw')
 end)
-
-
-
-
--- addonData.CollectionsAPI:GetCollection('bank'):AddMixin('ui', function()end)
