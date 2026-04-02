@@ -30,11 +30,6 @@ map/collection.lua
 	map/api.lua
 	map/command.lua
 
-metrics/collection.lua
-	metrics/api.lua
-	metrics/command.lua
-	metrics/ui.lua
-
 mount/collection.lua
 	mount/api.lua
 
