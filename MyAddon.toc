@@ -39,8 +39,6 @@ movementSpeed/collection.lua
 
 persistentData/collection.lua
 	persistentData/api.lua
-	persistentData/command.lua
-	persistentData/ui.lua
 
 quest/collection.lua
 	quest/data.lua

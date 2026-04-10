@@ -1,125 +1,119 @@
 local addonName, addonData = ...
 
 
-local accessKeys = {}
-local globalPersistentData
-
-
-
-local function getSavedVariablesKey()
-	return addonName .. '_SavedVariables'
-end
-
-local function getPersistentData()
-	if globalPersistentData == nil then
-		local isAddonLoaded = select(2, C_AddOns.IsAddOnLoaded(addonName))
-
-		if isAddonLoaded then
-			globalPersistentData = _G[getSavedVariablesKey()]
-
-			if type(globalPersistentData) ~= 'table' then
-				globalPersistentData = {}
-			end
-		else
-			error(string.format(
-				'Addon %s not yet loaded, persistent data not ready',
-				addonName
-			))
-		end
-	end
-
-	return globalPersistentData
-end
-
 local function getNewAccessKey()
-	local keyLength = 8
-	local keyStart = math.pow(10, keyLength - 1)
-	local keyEnd = keyStart * 10 - 1
+	local characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	local keyLength = 12
 
-	local accessKey
+	local accessKey = ''
 
-	repeat
-		accessKey = math.random(keyStart, keyEnd)
-	until accessKeys[accessKey] == nil
+	for _ = 1, keyLength do
+		local characterIndex = math.random(#characters)
+
+		local character = characters:sub(characterIndex, characterIndex)
+
+		accessKey = accessKey .. character
+	end
 
 	return accessKey
 end
 
 
 
-local IMPORTS = {
-	persistentData = {
-		ui = true,
-	},
-}
+addonData.CollectionsAPI:GetCollection('persistentData'):AddMixin('api', function()
+	local accessKeyModules = {}
+	local moduleAccessKeys = {}
 
 
-addonData.CollectionsAPI:GetCollection("persistentData"):AddMixin("api", IMPORTS, function()
-	local AccessTableMetatable = {}
 	local PersistentDataAPI = {}
 
+	function PersistentDataAPI:CreateAccessKey(moduleKey)
+		if type(moduleKey) ~= 'string' or moduleKey == '' then
+			error('Argument <moduleKey> must be a non-empty string.')
+		end
 
-	function AccessTableMetatable:GetData()
-		return PersistentDataAPI:GetAccessKeyData(self.accessKey, self.initialData)
-	end
-
-
-	function PersistentDataAPI:CreateAccessTable(persistentDataKey, initialData)
-		local accessKey = self:CreateAccessKey(persistentDataKey)
-
-		local AccessTable = {
-			accessKey = accessKey,
-			initialData = initialData,
-		}
-
-		setmetatable(AccessTable, {
-			__index = AccessTableMetatable,
-		})
-
-		return AccessTable
-	end
-
-	function PersistentDataAPI:CreateAccessKey(persistentDataKey)
-		if accessKeys[persistentDataKey] ~= nil then
-			error("Access key already exists for " .. persistentDataKey)
+		if moduleAccessKeys[moduleKey] ~= nil then
+			error(string.format(
+				'Access key already exists for "%s"',
+				moduleKey
+			))
 		end
 
 		local accessKey = getNewAccessKey()
 
-		accessKeys[persistentDataKey] = accessKey
+		accessKeyModules[accessKey] = moduleKey
+		moduleAccessKeys[moduleKey] = accessKey
 
 		return accessKey
 	end
 
-	function PersistentDataAPI:GetAccessKeyData(accessKey, accessKeyDataDefault)
-		local persistentData = getPersistentData()
-
-		local accessKeyData = persistentData[accessKey]
-
-		if accessKeyData == nil then
-			if type(accessKeyDataDefault) == "table" then
-				accessKeyData = accessKeyDataDefault
-			else
-				accessKeyData = {}
-			end
-
-			persistentData[accessKey] = accessKeyData
+	function PersistentDataAPI:IsAccessKeyValid(accessKey)
+		if accessKeyModules[accessKey] ~= nil then
+			return true
 		end
 
-		return accessKeyData
+		return false
 	end
 
-	function PersistentDataAPI:SavePersistentData()
-		_G[getSavedVariablesKey()] = getPersistentData()
+	function PersistentDataAPI:GetModulePersistentData(accessKey)
+		local isValidAccessKey = self:IsAccessKeyValid(accessKey)
+
+		if not isValidAccessKey then
+			error('Argument <accessKey> is invalid.')
+		end
+
+		local addonPersistentData = self:GetAddonPersistentData()
+
+		local moduleKey = accessKeyModules[accessKey]
+
+		local modulePersistentData = addonPersistentData[moduleKey]
+
+		if modulePersistentData == nil then
+			modulePersistentData = {}
+
+			addonPersistentData[moduleKey] = modulePersistentData
+		end
+
+		return modulePersistentData
 	end
 
-	function PersistentDataAPI:ClearPersistentData()
-		IMPORTS.persistentData.ui:UnregisterAllEvents()
-
-		_G[getSavedVariablesKey()] = nil
-
-		ReloadUI()
+	function PersistentDataAPI:GetSavedVariablesKey()
+		return addonName .. '_SavedVariables'
 	end
+
+	function PersistentDataAPI:GetAddonPersistentData()
+		local isAddonLoaded = select(2, C_AddOns.IsAddOnLoaded(addonName))
+
+		if not isAddonLoaded then
+			error(string.format(
+				'Addon "%s" not yet loaded, persistent data not ready.',
+				addonName
+			))
+		end
+
+		local savedVariablesKey = self:GetSavedVariablesKey()
+
+		local addonPersistentData = _G[savedVariablesKey]
+
+		if type(addonPersistentData) ~= 'table' then
+			addonPersistentData = {}
+
+			_G[savedVariablesKey] = addonPersistentData
+		end
+
+		return addonPersistentData
+	end
+
+	function PersistentDataAPI:ClearPersistentData(reloadUI)
+		local savedVariablesKey = self:GetSavedVariablesKey()
+
+		_G[savedVariablesKey] = nil
+
+		if reloadUI then
+			ReloadUI()
+		end
+	end
+
 
 
 	return PersistentDataAPI
