@@ -10,7 +10,6 @@ actionButton/collection.lua
 	actionButton/ui.lua
 
 audio/collection.lua
-	audio/ui.lua
 
 bank/collection.lua
 	bank/ui.lua
