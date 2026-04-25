@@ -29,6 +29,8 @@ map/collection.lua
 	map/api.lua
 	map/command.lua
 
+math/collection.lua
+
 mount/collection.lua
 	mount/api.lua
 
