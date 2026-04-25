@@ -49,6 +49,9 @@ quest/collection.lua
 table/collection.lua
 	table/api.lua
 
+time/collection.lua
+	time/api.lua
+
 tradingPost/collection.lua
 	tradingPost/ui.lua
 
