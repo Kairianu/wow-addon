@@ -59,7 +59,7 @@ MovementSpeedFrame:SetScript('onUpdate', function(self, elapsed)
 
 	local movementSpeed = MovementSpeedAPI:GetCurrentMovementSpeed()
 
-	if movementSpeed == 0 then
+	if not canaccessvalue(movementSpeed) or movementSpeed == 0 then
 		self.SpeedFontString:SetText()
 	else
 		local movementSpeedPercentString = MovementSpeedAPI:GetMovementSpeedPercentString(movementSpeed)
