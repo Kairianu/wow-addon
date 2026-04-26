@@ -42,6 +42,7 @@ persistentData/collection.lua
 	persistentData/api.lua
 
 quest/collection.lua
+	quest/api.lua
 	quest/data.lua
 	quest/database.lua
 	quest/ui.lua
