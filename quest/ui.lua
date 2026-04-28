@@ -18,7 +18,9 @@ hooksecurefunc(QuestFrameIDEditBox, 'SetText', function(self, text)
 end)
 
 QuestFrameIDEditBox:SetScript('onTextChanged', function(self)
-	self:SetText(self.originalText)
+	if self.originalText then
+		self:SetText(self.originalText)
+	end
 end)
 
 QuestFrameIDEditBox:SetScript('onEscapePressed', function(self)
