@@ -15,22 +15,8 @@ end)
 
 local MovementSpeedFrame = CreateFrame('frame', nil, UIParent)
 
-function MovementSpeedFrame:UpdatePosition(isGliding)
-	if isGliding == nil then
-		isGliding = C_PlayerInfo.GetGlidingInfo()
-	end
-
-	self:ClearAllPoints()
-
-	if isGliding then
-		self:SetPoint('Top', EncounterBar, 'Bottom', 0, 20)
-	else
-		self:SetPoint('Right', BagsBar, 'Left', -5, 1.5)
-	end
-end
-
-MovementSpeedFrame:UpdatePosition()
 MovementSpeedFrame:SetSize(1, 1)
+MovementSpeedFrame:SetPoint('Right', BagsBar, 'Left', -5, 1.5)
 
 MovementSpeedFrame.SpeedFontString = MovementSpeedFrame:CreateFontString()
 MovementSpeedFrame.SpeedFontString:SetFont('fonts/blei00d.ttf', 18, 'outline')
@@ -39,11 +25,6 @@ MovementSpeedFrame.SpeedFontString:SetTextColor(1, 0.82, 0)
 
 hooksecurefunc(MovementSpeedFrame.SpeedFontString, 'SetText', function(self)
 	self:GetParent():SetSize(self:GetSize())
-end)
-
-MovementSpeedFrame:RegisterEvent('PLAYER_IS_GLIDING_CHANGED')
-MovementSpeedFrame:SetScript('onEvent', function(self, event, arg1)
-	self:UpdatePosition(arg1)
 end)
 
 MovementSpeedFrame.onUpdateElapsed = 0
