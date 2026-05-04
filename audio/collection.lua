@@ -19,9 +19,9 @@ local function GetPercentageString(value)
 	-- TODO: [import] use own math rounding method
 	local roundedPercentageValue = math.floor((value * 1000) + 0.5) / 10
 
-	if roundedPercentageValue % 1 == 0 then
-		roundedPercentageValue = roundedPercentageValue .. '.0'
-	end
+	-- if roundedPercentageValue % 1 == 0 then
+	-- 	roundedPercentageValue = roundedPercentageValue .. '.0'
+	-- end
 
 	return roundedPercentageValue .. '%'
 end
@@ -31,7 +31,7 @@ end
 
 
 local AudioAPI = {
-	exponentialConstant = 2,
+	exponentialConstant = 2.5,
 }
 
 function AudioAPI:GetLinearVolume(value)
