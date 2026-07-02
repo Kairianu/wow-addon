@@ -9,6 +9,9 @@ actionButton/collection.lua
 	actionButton/command.lua
 	actionButton/ui.lua
 
+appearance/collection.lua
+	appearance/ui.lua
+
 audio/collection.lua
 
 bank/collection.lua
