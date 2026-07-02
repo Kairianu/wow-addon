@@ -1,3 +1,6 @@
+local addonName, addonData = ...
+
+
 --------------------------------------------------
 -----CVar-----------------------------------------
 --------------------------------------------------
@@ -85,4 +88,42 @@ BankEventFrame:SetScript('onEvent', function(self, event)
 
 		self:UnregisterEvent('BANKFRAME_OPENED')
 	end
+end)
+
+
+
+
+
+--------------------------------------------------
+----- Edit Mode Layout ---------------------------
+--------------------------------------------------
+
+local EditModeLayoutEventFrame = CreateFrame('Frame')
+
+EditModeLayoutEventFrame:RegisterEvent('EDIT_MODE_LAYOUTS_UPDATED')
+
+EditModeLayoutEventFrame:SetScript('OnEvent', function(_, _, layoutInfo)
+	local TableAPI = addonData.CollectionsAPI:GetCollection('table'):GetMixin('api')
+
+	local presetLayoutCount = TableAPI:GetItemCount(Enum.EditModePresetLayouts)
+
+	local activeLayoutID = layoutInfo.activeLayout
+
+	if activeLayoutID <= presetLayoutCount then
+		return
+	end
+
+	local activeLayoutInfo = layoutInfo.layouts[activeLayoutID - presetLayoutCount]
+
+	local uiParentScale
+
+	if activeLayoutInfo.layoutName == 'Tall' then
+		uiParentScale = 0.5
+	elseif C_CVar.GetCVar('useUiScale') == '1' then
+		uiParentScale = tonumber(C_CVar.GetCVar('uiscale'))
+	else
+		uiParentScale = 0.64
+	end
+
+	UIParent:SetScale(uiParentScale)
 end)
