@@ -28,6 +28,8 @@ development/collection.lua
 dressingRoom/collection.lua
 	dressingRoom/ui.lua
 
+icon/collection.lua
+
 map/collection.lua
 	map/api.lua
 	map/command.lua
