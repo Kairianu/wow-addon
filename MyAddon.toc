@@ -22,6 +22,9 @@ character/collection.lua
 command/collection.lua
 	command/api.lua
 
+development/collection.lua
+	development/ui.lua
+
 dressingRoom/collection.lua
 	dressingRoom/ui.lua
 
