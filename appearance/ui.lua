@@ -228,6 +228,10 @@ function AppearanceEventFrame:HandleAddonLoaded(event, addonName)
 end
 
 function AppearanceEventFrame:HandleNameplateAdded(event, nameplateUnit)
+	if UnitAffectingCombat('player') then
+		return
+	end
+
 	local unitGUID = UnitGUID(nameplateUnit)
 
 	if not unitGUID:match('^Player%-') then
